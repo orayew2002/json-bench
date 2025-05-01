@@ -7,6 +7,7 @@ import (
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
+	time "time"
 )
 
 // suppress unused package warning
@@ -17,7 +18,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson9e1087fdDecodeTestJSONStructures(in *jlexer.Lexer, out *User) {
+func easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures(in *jlexer.Lexer, out *UserProfile) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -36,10 +37,134 @@ func easyjson9e1087fdDecodeTestJSONStructures(in *jlexer.Lexer, out *User) {
 			continue
 		}
 		switch key {
+		case "id":
+			out.ID = string(in.String())
 		case "name":
 			out.Name = string(in.String())
 		case "age":
 			out.Age = int(in.Int())
+		case "email":
+			if in.IsNull() {
+				in.Skip()
+				out.Email = nil
+			} else {
+				if out.Email == nil {
+					out.Email = new(string)
+				}
+				*out.Email = string(in.String())
+			}
+		case "created_at":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreatedAt).UnmarshalJSON(data))
+			}
+		case "last_login":
+			if in.IsNull() {
+				in.Skip()
+				out.LastLogin = nil
+			} else {
+				if out.LastLogin == nil {
+					out.LastLogin = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.LastLogin).UnmarshalJSON(data))
+				}
+			}
+		case "preferences":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				in.Delim('{')
+				out.Preferences = make(map[string]string)
+				for !in.IsDelim('}') {
+					key := string(in.String())
+					in.WantColon()
+					var v1 string
+					v1 = string(in.String())
+					(out.Preferences)[key] = v1
+					in.WantComma()
+				}
+				in.Delim('}')
+			}
+		case "friends":
+			if in.IsNull() {
+				in.Skip()
+				out.Friends = nil
+			} else {
+				in.Delim('[')
+				if out.Friends == nil {
+					if !in.IsDelim(']') {
+						out.Friends = make([]FriendProfile, 0, 1)
+					} else {
+						out.Friends = []FriendProfile{}
+					}
+				} else {
+					out.Friends = (out.Friends)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v2 FriendProfile
+					(v2).UnmarshalEasyJSON(in)
+					out.Friends = append(out.Friends, v2)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "address":
+			(out.Address).UnmarshalEasyJSON(in)
+		case "payment_method":
+			if in.IsNull() {
+				in.Skip()
+				out.PaymentMethod = nil
+			} else {
+				if out.PaymentMethod == nil {
+					out.PaymentMethod = new(PaymentMethod)
+				}
+				(*out.PaymentMethod).UnmarshalEasyJSON(in)
+			}
+		case "metadata":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				in.Delim('{')
+				out.Metadata = make(map[string]interface{})
+				for !in.IsDelim('}') {
+					key := string(in.String())
+					in.WantColon()
+					var v3 interface{}
+					if m, ok := v3.(easyjson.Unmarshaler); ok {
+						m.UnmarshalEasyJSON(in)
+					} else if m, ok := v3.(json.Unmarshaler); ok {
+						_ = m.UnmarshalJSON(in.Raw())
+					} else {
+						v3 = in.Interface()
+					}
+					(out.Metadata)[key] = v3
+					in.WantComma()
+				}
+				in.Delim('}')
+			}
+		case "tags":
+			if in.IsNull() {
+				in.Skip()
+				out.Tags = nil
+			} else {
+				in.Delim('[')
+				if out.Tags == nil {
+					if !in.IsDelim(']') {
+						out.Tags = make([]string, 0, 4)
+					} else {
+						out.Tags = []string{}
+					}
+				} else {
+					out.Tags = (out.Tags)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v4 string
+					v4 = string(in.String())
+					out.Tags = append(out.Tags, v4)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -50,13 +175,18 @@ func easyjson9e1087fdDecodeTestJSONStructures(in *jlexer.Lexer, out *User) {
 		in.Consumed()
 	}
 }
-func easyjson9e1087fdEncodeTestJSONStructures(out *jwriter.Writer, in User) {
+func easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures(out *jwriter.Writer, in UserProfile) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"name\":"
+		const prefix string = ",\"id\":"
 		out.RawString(prefix[1:])
+		out.String(string(in.ID))
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
 		out.String(string(in.Name))
 	}
 	{
@@ -64,29 +194,390 @@ func easyjson9e1087fdEncodeTestJSONStructures(out *jwriter.Writer, in User) {
 		out.RawString(prefix)
 		out.Int(int(in.Age))
 	}
+	if in.Email != nil {
+		const prefix string = ",\"email\":"
+		out.RawString(prefix)
+		out.String(string(*in.Email))
+	}
+	{
+		const prefix string = ",\"created_at\":"
+		out.RawString(prefix)
+		out.Raw((in.CreatedAt).MarshalJSON())
+	}
+	if in.LastLogin != nil {
+		const prefix string = ",\"last_login\":"
+		out.RawString(prefix)
+		out.Raw((*in.LastLogin).MarshalJSON())
+	}
+	{
+		const prefix string = ",\"preferences\":"
+		out.RawString(prefix)
+		if in.Preferences == nil && (out.Flags&jwriter.NilMapAsEmpty) == 0 {
+			out.RawString(`null`)
+		} else {
+			out.RawByte('{')
+			v5First := true
+			for v5Name, v5Value := range in.Preferences {
+				if v5First {
+					v5First = false
+				} else {
+					out.RawByte(',')
+				}
+				out.String(string(v5Name))
+				out.RawByte(':')
+				out.String(string(v5Value))
+			}
+			out.RawByte('}')
+		}
+	}
+	{
+		const prefix string = ",\"friends\":"
+		out.RawString(prefix)
+		if in.Friends == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v6, v7 := range in.Friends {
+				if v6 > 0 {
+					out.RawByte(',')
+				}
+				(v7).MarshalEasyJSON(out)
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"address\":"
+		out.RawString(prefix)
+		(in.Address).MarshalEasyJSON(out)
+	}
+	if in.PaymentMethod != nil {
+		const prefix string = ",\"payment_method\":"
+		out.RawString(prefix)
+		(*in.PaymentMethod).MarshalEasyJSON(out)
+	}
+	{
+		const prefix string = ",\"metadata\":"
+		out.RawString(prefix)
+		if in.Metadata == nil && (out.Flags&jwriter.NilMapAsEmpty) == 0 {
+			out.RawString(`null`)
+		} else {
+			out.RawByte('{')
+			v8First := true
+			for v8Name, v8Value := range in.Metadata {
+				if v8First {
+					v8First = false
+				} else {
+					out.RawByte(',')
+				}
+				out.String(string(v8Name))
+				out.RawByte(':')
+				if m, ok := v8Value.(easyjson.Marshaler); ok {
+					m.MarshalEasyJSON(out)
+				} else if m, ok := v8Value.(json.Marshaler); ok {
+					out.Raw(m.MarshalJSON())
+				} else {
+					out.Raw(json.Marshal(v8Value))
+				}
+			}
+			out.RawByte('}')
+		}
+	}
+	{
+		const prefix string = ",\"tags\":"
+		out.RawString(prefix)
+		if in.Tags == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v9, v10 := range in.Tags {
+				if v9 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v10))
+			}
+			out.RawByte(']')
+		}
+	}
 	out.RawByte('}')
 }
 
 // MarshalJSON supports json.Marshaler interface
-func (v User) MarshalJSON() ([]byte, error) {
+func (v UserProfile) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson9e1087fdEncodeTestJSONStructures(&w, v)
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v User) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson9e1087fdEncodeTestJSONStructures(w, v)
+func (v UserProfile) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
-func (v *User) UnmarshalJSON(data []byte) error {
+func (v *UserProfile) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson9e1087fdDecodeTestJSONStructures(&r, v)
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *User) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson9e1087fdDecodeTestJSONStructures(l, v)
+func (v *UserProfile) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures(l, v)
+}
+func easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures1(in *jlexer.Lexer, out *PaymentMethod) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "type":
+			out.Type = string(in.String())
+		case "card_number":
+			out.CardNumber = string(in.String())
+		case "expiry":
+			out.Expiry = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures1(out *jwriter.Writer, in PaymentMethod) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"type\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.Type))
+	}
+	{
+		const prefix string = ",\"card_number\":"
+		out.RawString(prefix)
+		out.String(string(in.CardNumber))
+	}
+	{
+		const prefix string = ",\"expiry\":"
+		out.RawString(prefix)
+		out.String(string(in.Expiry))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v PaymentMethod) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures1(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v PaymentMethod) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures1(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *PaymentMethod) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures1(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *PaymentMethod) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures1(l, v)
+}
+func easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures2(in *jlexer.Lexer, out *FriendProfile) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = string(in.String())
+		case "name":
+			out.Name = string(in.String())
+		case "connected":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.Connected).UnmarshalJSON(data))
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures2(out *jwriter.Writer, in FriendProfile) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"id\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.ID))
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		out.String(string(in.Name))
+	}
+	{
+		const prefix string = ",\"connected\":"
+		out.RawString(prefix)
+		out.Raw((in.Connected).MarshalJSON())
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v FriendProfile) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures2(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v FriendProfile) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures2(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *FriendProfile) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures2(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *FriendProfile) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures2(l, v)
+}
+func easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures3(in *jlexer.Lexer, out *Address) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "country":
+			out.Country = string(in.String())
+		case "city":
+			out.City = string(in.String())
+		case "street":
+			out.Street = string(in.String())
+		case "zip_code":
+			out.ZipCode = string(in.String())
+		case "is_primary":
+			out.IsPrimary = bool(in.Bool())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures3(out *jwriter.Writer, in Address) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"country\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.Country))
+	}
+	{
+		const prefix string = ",\"city\":"
+		out.RawString(prefix)
+		out.String(string(in.City))
+	}
+	{
+		const prefix string = ",\"street\":"
+		out.RawString(prefix)
+		out.String(string(in.Street))
+	}
+	{
+		const prefix string = ",\"zip_code\":"
+		out.RawString(prefix)
+		out.String(string(in.ZipCode))
+	}
+	{
+		const prefix string = ",\"is_primary\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.IsPrimary))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Address) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures3(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Address) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson9e1087fdEncodeGithubComOrayew2002JsonBenchStructures3(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Address) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures3(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Address) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson9e1087fdDecodeGithubComOrayew2002JsonBenchStructures3(l, v)
 }

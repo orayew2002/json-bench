@@ -16,12 +16,12 @@ import (
 func BenchmarkEasyjson(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
-			jsonData, err := easyjson.Marshal(UserStruct)
+			jsonData, err := easyjson.Marshal(UserProfileData)
 			if err != nil {
 				return errors.Join(err, errors.New("easyjson marshal error"))
 			}
 
-			var newData structures.User
+			var newData structures.UserProfile
 			if err = easyjson.Unmarshal(jsonData, &newData); err != nil {
 				return errors.Join(err, errors.New("easyjson unmarshal error"))
 			}
@@ -34,12 +34,12 @@ func BenchmarkEasyjson(b *testing.B) {
 func BenchmarkJsoniter(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
-			jsonData, err := jsoniter.Marshal(UserStruct)
+			jsonData, err := jsoniter.Marshal(UserProfileData)
 			if err != nil {
 				return errors.Join(err, errors.New("jsoniter marshal error"))
 			}
 
-			var newData structures.User
+			var newData structures.UserProfile
 			if err = jsoniter.Unmarshal(jsonData, &newData); err != nil {
 				return errors.Join(err, errors.New("jsoniter unmarshal error"))
 			}
@@ -52,12 +52,12 @@ func BenchmarkJsoniter(b *testing.B) {
 func BenchmarkSonicJSON(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
-			jsonData, err := sonic.Marshal(UserStruct)
+			jsonData, err := sonic.Marshal(UserProfileData)
 			if err != nil {
 				return errors.Join(err, errors.New("sonic marshal error"))
 			}
 
-			var newData structures.User
+			var newData structures.UserProfile
 			if err = sonic.Unmarshal(jsonData, &newData); err != nil {
 				return errors.Join(err, errors.New("sonic unmarshal error"))
 			}
@@ -70,12 +70,12 @@ func BenchmarkSonicJSON(b *testing.B) {
 func BenchmarkJSON(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
-			jsonData, err := json.Marshal(UserStruct)
+			jsonData, err := json.Marshal(UserProfileData)
 			if err != nil {
 				return errors.Join(err, errors.New("json marshal error"))
 			}
 
-			var newData structures.User
+			var newData structures.UserProfile
 			if err = json.Unmarshal(jsonData, &newData); err != nil {
 				return errors.Join(err, errors.New("json unmarshal error"))
 			}
@@ -88,12 +88,12 @@ func BenchmarkJSON(b *testing.B) {
 func BenchmarkFFJSON(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
-			jsonData, err := ffjson.Marshal(UserStruct)
+			jsonData, err := ffjson.Marshal(UserProfileData)
 			if err != nil {
 				return errors.Join(err, errors.New("ffjson marshal error"))
 			}
 
-			var newData structures.User
+			var newData structures.UserProfile
 			if err = ffjson.Unmarshal(jsonData, &newData); err != nil {
 				return errors.Join(err, errors.New("ffjson unmarshal error"))
 			}

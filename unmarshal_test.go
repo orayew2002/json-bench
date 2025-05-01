@@ -15,12 +15,12 @@ import (
 
 func BenchmarkUnmarshalEasyjson(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
-		jsonData, err := easyjson.Marshal(UserStruct)
+		jsonData, err := easyjson.Marshal(UserProfileData)
 		if err != nil {
 			return errors.Join(err, errors.New("easyjson marshal error"))
 		}
 
-		var newData structures.User
+		var newData structures.UserProfile
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -35,12 +35,12 @@ func BenchmarkUnmarshalEasyjson(b *testing.B) {
 
 func BenchmarkUnmarshalJsoniter(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
-		jsonData, err := jsoniter.Marshal(UserStruct)
+		jsonData, err := jsoniter.Marshal(UserProfileData)
 		if err != nil {
 			return errors.Join(err, errors.New("jsoniter marshal error"))
 		}
 
-		var newData structures.User
+		var newData structures.UserProfile
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -55,12 +55,12 @@ func BenchmarkUnmarshalJsoniter(b *testing.B) {
 
 func BenchmarkUnmarshalSonicJSON(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
-		jsonData, err := sonic.Marshal(UserStruct)
+		jsonData, err := sonic.Marshal(UserProfileData)
 		if err != nil {
 			return errors.Join(err, errors.New("sonic marshal error"))
 		}
 
-		var newData structures.User
+		var newData structures.UserProfile
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -75,12 +75,12 @@ func BenchmarkUnmarshalSonicJSON(b *testing.B) {
 
 func BenchmarkUnmarshalJSON(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
-		jsonData, err := json.Marshal(UserStruct)
+		jsonData, err := json.Marshal(UserProfileData)
 		if err != nil {
 			return errors.Join(err, errors.New("json marshal error"))
 		}
 
-		var newData structures.User
+		var newData structures.UserProfile
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -95,12 +95,12 @@ func BenchmarkUnmarshalJSON(b *testing.B) {
 
 func BenchmarkUnmarshalFFJSON(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
-		jsonData, err := ffjson.Marshal(UserStruct)
+		jsonData, err := ffjson.Marshal(UserProfileData)
 		if err != nil {
 			return errors.Join(err, errors.New("ffjson marshal error"))
 		}
 
-		var newData structures.User
+		var newData structures.UserProfile
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
