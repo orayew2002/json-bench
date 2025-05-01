@@ -33,7 +33,6 @@ go test -bench=. -benchtime=1000000x
 Lower ns/op = Faster Performance
 
 These benchmarks measure the time it takes to marshal (encode) and unmarshal (decode) JSON using different Go libraries
-on an Apple M2 (goarch: arm64).
 
 ### 🔁 Combined Marshal + Unmarshal (1000000 iteration)
 
