@@ -13,10 +13,8 @@ import (
 	"github.com/orayew2002/json-bench/structures"
 )
 
-var UserStruct = structures.User{Name: "Alice", Age: 30}
-
 func BenchmarkEasyjson(b *testing.B) {
-	RunBenchMark(b, func() error {
+	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
 			jsonData, err := easyjson.Marshal(UserStruct)
 			if err != nil {
@@ -34,7 +32,7 @@ func BenchmarkEasyjson(b *testing.B) {
 }
 
 func BenchmarkJsoniter(b *testing.B) {
-	RunBenchMark(b, func() error {
+	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
 			jsonData, err := jsoniter.Marshal(UserStruct)
 			if err != nil {
@@ -52,7 +50,7 @@ func BenchmarkJsoniter(b *testing.B) {
 }
 
 func BenchmarkSonicJSON(b *testing.B) {
-	RunBenchMark(b, func() error {
+	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
 			jsonData, err := sonic.Marshal(UserStruct)
 			if err != nil {
@@ -70,7 +68,7 @@ func BenchmarkSonicJSON(b *testing.B) {
 }
 
 func BenchmarkJSON(b *testing.B) {
-	RunBenchMark(b, func() error {
+	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
 			jsonData, err := json.Marshal(UserStruct)
 			if err != nil {
@@ -88,7 +86,7 @@ func BenchmarkJSON(b *testing.B) {
 }
 
 func BenchmarkFFJSON(b *testing.B) {
-	RunBenchMark(b, func() error {
+	RunBenchMark(b, func(b *testing.B) error {
 		for i := 0; i < b.N; i++ {
 			jsonData, err := ffjson.Marshal(UserStruct)
 			if err != nil {
@@ -105,10 +103,10 @@ func BenchmarkFFJSON(b *testing.B) {
 	})
 }
 
-func RunBenchMark(b *testing.B, runner func() error) {
+func RunBenchMark(b *testing.B, runner func(b *testing.B) error) {
 	b.ResetTimer()
 
-	if err := runner(); err != nil {
+	if err := runner(b); err != nil {
 		b.Fatal(err)
 	}
 }
