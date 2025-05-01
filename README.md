@@ -1,7 +1,6 @@
 # 📊 Go JSON Benchmarking
 
-This repository benchmarks various Go JSON libraries to evaluate their `Marshal` and `Unmarshal` performance on Apple
-M2 (ARM64) architecture.
+This repository benchmarks various Go JSON libraries to evaluate their `Marshal` and `Unmarshal` performance
 
 ---
 
@@ -33,6 +32,7 @@ go test -bench=. -benchtime=1000000x
 Lower ns/op = Faster Performance
 
 These benchmarks measure the time it takes to marshal (encode) and unmarshal (decode) JSON using different Go libraries
+on an Apple M2 (goarch: arm64).
 
 ### 🔁 Combined Marshal + Unmarshal (1000000 iteration)
 
