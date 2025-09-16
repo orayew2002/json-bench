@@ -6,10 +6,23 @@ import (
 	"testing"
 
 	"github.com/bytedance/sonic"
+	goccy_json "github.com/goccy/go-json"
 	"github.com/json-iterator/go"
 	"github.com/mailru/easyjson"
 	"github.com/pquerna/ffjson/ffjson"
 )
+
+func BenchmarkMarshalGoccyJson(b *testing.B) {
+	RunBenchMark(b, func(b *testing.B) error {
+		for i := 0; i < b.N; i++ {
+			if _, err := goccy_json.Marshal(UserProfileData); err != nil {
+				return errors.Join(err, errors.New("goccy json marshal error"))
+			}
+		}
+
+		return nil
+	})
+}
 
 func BenchmarkMarshalEasyjson(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
