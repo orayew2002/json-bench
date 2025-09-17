@@ -6,12 +6,33 @@ import (
 	"testing"
 
 	"github.com/bytedance/sonic"
+	goccy_json "github.com/goccy/go-json"
 	"github.com/json-iterator/go"
 	"github.com/mailru/easyjson"
 	"github.com/pquerna/ffjson/ffjson"
 
 	"github.com/orayew2002/json-bench/structures"
 )
+
+func BenchmarkUnmarshalGoccyJson(b *testing.B) {
+	RunBenchMark(b, func(b *testing.B) error {
+		jsonData, err := goccy_json.Marshal(UserProfileData)
+		if err != nil {
+			return errors.Join(err, errors.New("goccy json marshal error"))
+		}
+
+		var newData structures.UserProfile
+
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			if err = goccy_json.Unmarshal(jsonData, &newData); err != nil {
+				return errors.Join(err, errors.New("goccy json unmarshal error"))
+			}
+		}
+
+		return nil
+	})
+}
 
 func BenchmarkUnmarshalEasyjson(b *testing.B) {
 	RunBenchMark(b, func(b *testing.B) error {
